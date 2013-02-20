@@ -23,9 +23,10 @@ measure_XS(callback, value)
         value_len = SvCUR(value);
         value_pointer = SvPV(value, value_len);
 
+        PUSHMARK(sp);
+
         __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
 
-        PUSHMARK(sp);
         perl_call_sv(callback, G_DISCARD|G_NOARGS);
 
         __asm__ volatile("rdtsc" : "=a" (after_a), "=d" (after_d));
