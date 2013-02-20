@@ -1,0 +1,11 @@
+README
+Makefile
+Makefile.old
+MYMETA.*
+blib/
+pm_to_blib
+MANIFEST.bak
+Timer-CPU-*.tar.gz
+CPU.bs
+CPU.c
+CPU.o

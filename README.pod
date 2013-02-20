@@ -1,0 +1,21 @@
+=head1 NAME
+
+Timer::CPU - Precise user-space timer using the CPU clock
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 SEE ALSO
+
+L<Timer-CPU github repo|https://github.com/hoytech/Timer-CPU>
+
+=head1 AUTHOR
+
+Doug Hoyte, C<< <doug@hcsw.org> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2013 Doug Hoyte.
+
+This module is licensed under the same terms as perl itself.
