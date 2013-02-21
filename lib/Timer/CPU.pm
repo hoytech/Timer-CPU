@@ -29,6 +29,8 @@ sub measure {
 
 
 
+__END__
+
 
 =head1 NAME
 
@@ -46,9 +48,9 @@ Timer::CPU - Precise user-space timer using the CPU clock
 
 For most timing operations, L<Time::HiRes> is great. However, it usually does a syscall (except eg on linux systems with gettimeofday in VDSO) which adds noise, and is not as precise as possible.
 
-This module is a pure user-space timing library that should be quite precise. To measure the time of an operation, pass a callback to C<Timer::CPU::measure>. It will return the number of CPU ticks that elapsed while running your callback. Actually, what is returned is a L<Math::Int64> object so as to support 32-bit perls.
+This module is a user-space timing library that should be quite precise. To measure the time of an operation, pass a callback to C<Timer::CPU::measure>. It will return the number of CPU ticks that elapsed while running your callback. Actually, what is returned is a L<Math::Int64> object so as to support 32-bit perls.
 
-On x86, this module uses the C<rdtsc> assembly instruction in order to access the time-stamp counter.
+On x86 and x86-64, this module uses the C<rdtsc> assembly instruction in order to access the time-stamp counter.
 
 
 
@@ -57,7 +59,9 @@ On x86, this module uses the C<rdtsc> assembly instruction in order to access th
 
 There are many caveats to this timing technique, but there are caveats to all timing techniques.
 
-The biggest problem with using CPU ticks is that we don't necessarily know the real-time duration of a tick. Even if you figure out the clock frequency, maybe with L<Sys::Info::Device::CPU>, you can't be sure that the frequency hasn't changed while running your callback. Because of these limitations, this module is most useful for comparing the relative difference between two events on the same computer, not for absolute timing measurements.
+It can be difficult to measure perl code by ticks elapsed because, compared to C, perl code typically does a lot "under the hood".
+
+The real-time duration of a tick isn't necessarily known. You can figure out the clock frequency with L<Sys::Info::Device::CPU>, but you should first verify your CPU is modernish and has a constant time-stamp counter (look for "constant_tsc" in /proc/cpuinfo if you are on linux).
 
 If you have multiple CPUs/cores your process may have been context switched to another CPU which can corrupt your timing data since the clocks aren't synchronized between CPUs. Unless your task is very short, you should consider pegging your process to a particular CPU.
 
@@ -83,9 +87,9 @@ Note that the interface doesn't allow returning data from the callback. The call
 
 =head1 BUGS/TODO
 
-Is this the right module name/namespace?
+Support more chipsets
 
-Support more processors
+Is this the right module name/namespace?
 
 Should it serialize the instruction stream with C<CPUID>?
 
