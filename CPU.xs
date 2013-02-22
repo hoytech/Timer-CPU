@@ -25,10 +25,20 @@ measure_XS(callback, value)
 
         PUSHMARK(sp);
 
+        /* "warm up" CPUID and RDTSC instructions: */
+        __asm__ volatile("cpuid");
+        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
+        __asm__ volatile("cpuid");
+        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
+        __asm__ volatile("cpuid");
+        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
+
+        __asm__ volatile("cpuid");
         __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
 
         perl_call_sv(callback, G_DISCARD|G_NOARGS);
 
+        __asm__ volatile("cpuid");
         __asm__ volatile("rdtsc" : "=a" (after_a), "=d" (after_d));
 
         before = ((unsigned long long) before_a) | (((unsigned long long) before_d) << 32);
