@@ -12,4 +12,4 @@ my $result = Timer::CPU::measure(sub {
 
 is($junk, 'works', 'ran the callback');
 diag("elapsed: $result");
-like($result, qr/^\d+$/, 'got a number back');
+like($result, qr/^[\d.]+$/, 'got a number back');

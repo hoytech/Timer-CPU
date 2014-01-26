@@ -2,6 +2,8 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#include "cycle.h"
+
 
 
 MODULE = Timer::CPU		PACKAGE = Timer::CPU
@@ -10,38 +12,20 @@ PROTOTYPES: ENABLE
 
 
 
-void
-measure_XS(callback, value)
+double
+measure_XS(callback)
         SV *callback
-        SV *value
     CODE:
-        size_t value_len;
-        unsigned char *value_pointer;
-        unsigned before_a, before_d, after_a, after_d;
-        unsigned long long before, after;
-
-        value_len = SvCUR(value);
-        value_pointer = SvPV(value, value_len);
+        ticks before, after;
 
         PUSHMARK(sp);
 
-        /* "warm up" CPUID and RDTSC instructions: */
-        __asm__ volatile("cpuid");
-        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
-        __asm__ volatile("cpuid");
-        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
-        __asm__ volatile("cpuid");
-        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
-
-        __asm__ volatile("cpuid");
-        __asm__ volatile("rdtsc" : "=a" (before_a), "=d" (before_d));
+        before = getticks();
 
         perl_call_sv(callback, G_DISCARD|G_NOARGS);
 
-        __asm__ volatile("cpuid");
-        __asm__ volatile("rdtsc" : "=a" (after_a), "=d" (after_d));
+        after = getticks();
 
-        before = ((unsigned long long) before_a) | (((unsigned long long) before_d) << 32);
-        after = ((unsigned long long) after_a) | (((unsigned long long) after_d) << 32);
-
-        *((unsigned long long *) value_pointer) = after - before;
+        RETVAL = elapsed(after, before);
+    OUTPUT:
+        RETVAL

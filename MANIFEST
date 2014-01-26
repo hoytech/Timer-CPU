@@ -1,5 +1,6 @@
 Changes
 CPU.xs
+cycle.h
 lib/Timer/CPU.pm
 Makefile.PL
 MANIFEST

@@ -7,7 +7,7 @@ my %args = (
     NAME => 'Timer::CPU',
     VERSION_FROM => 'lib/Timer/CPU.pm',
     PREREQ_PM => {
-      'Math::Int64' => 0,
+      'XSLoader' => 0,
     },
     LIBS => [],
     DEFINE => '',
